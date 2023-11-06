@@ -681,6 +681,19 @@
 
 			const successRatioElem = document.getElementById('successRatio');
 			successRatioElem.textContent = '0/0';
+			completedEquations.recordedStartTime = new Date();
+		}
+
+		function displayCompletedGameDuration() {
+			const completedEquations = document.getElementById("completedEquations");
+			if (completedEquations.hasOwnProperty('recordedStartTime')) {
+				const endTime = new Date();
+				const successRatioElem = document.getElementById('successRatio');
+				const startTime = completedEquations.recordedStartTime;
+				const timeDiff = endTime - startTime;
+				const seconds = Math.floor(timeDiff / 100) / 10;
+				successRatioElem.textContent += ` (${seconds} seconds)`;
+			}
 
 		}
 
@@ -711,6 +724,7 @@
 		}
 
 		function restartGame() {
+			displayCompletedGameDuration();
 			const banner = document.getElementById('introBanner');
 			banner.style.display = 'flex';
 			document.addEventListener('keydown', function startGame(e) {
