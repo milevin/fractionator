@@ -2,743 +2,743 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Fractionator!</title>
-	<style>
-		body {
-			font-family: Arial, sans-serif;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			margin: 0;
-			padding: 0;
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractionator!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
 
-		#gameContainer {
-			display: flex;
-			width: 90vw;
-			height: 80vh;
-			margin-top: 20px;
-		}
+        #gameContainer {
+            display: flex;
+            width: 90vw;
+            height: 80vh;
+            margin-top: 20px;
+        }
 
-		#gamePlayArea {
-			flex: 3;
-			border: 1px solid black;
-			position: relative;
-			overflow: hidden;
-		}
+        #gamePlayArea {
+            flex: 3;
+            border: 1px solid black;
+            position: relative;
+            overflow: hidden;
+        }
 
-		#summaryArea {
-			flex: 1;
-			border: 1px solid black;
-			padding: 10px;
-			overflow-y: auto;
-		}
+        #summaryArea {
+            flex: 1;
+            border: 1px solid black;
+            padding: 10px;
+            overflow-y: auto;
+        }
 
-		.correct,
-		.wrong {
-			vertical-align: middle;
-		}
+        .correct,
+        .wrong {
+            vertical-align: middle;
+        }
 
-		.fraction {
-			display: inline-block;
-			text-align: center;
-			margin: 0 10px;
-			vertical-align: middle;
-			width: 20px;
-			/* Fixed width for all fractions. Adjust this value if necessary. */
-		}
+        .fraction {
+            display: inline-block;
+            text-align: center;
+            margin: 0 10px;
+            vertical-align: middle;
+            width: 20px;
+            /* Fixed width for all fractions. Adjust this value if necessary. */
+        }
 
-		.fraction .numerator,
-		.fraction .denominator {
-			display: block;
-		}
+        .fraction .numerator,
+        .fraction .denominator {
+            display: block;
+        }
 
-		.fraction .bar {
-			height: 2px;
-			background: black;
-			margin: 5px 0;
-		}
+        .fraction .bar {
+            height: 2px;
+            background: black;
+            margin: 5px 0;
+        }
 
-		.operator,
-		.result {
-			vertical-align: middle;
-		}
+        .operator,
+        .result {
+            vertical-align: middle;
+        }
 
-		#playerAnswerArea {
-			bottom: 10px;
-			position: absolute;
-			font-size: 1.5rem;
-		}
+        #playerAnswerArea {
+            bottom: 10px;
+            position: absolute;
+            font-size: 1.5rem;
+        }
 
-		.inputFraction {
-			border: 1px solid #ccc;
-			display: inline-block;
-			padding: 5px;
-		}
+        .inputFraction {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 5px;
+        }
 
-		.inputFraction {
-			position: relative;
-			/* Make the inputFraction container position relative */
-		}
+        .inputFraction {
+            position: relative;
+            /* Make the inputFraction container position relative */
+        }
 
-		.inputFraction input {
-			width: 50px;
-			text-align: center;
-			border: none;
-			font-size: 24px;
-		}
+        .inputFraction input {
+            width: 50px;
+            text-align: center;
+            border: none;
+            font-size: 24px;
+        }
 
-		.inputFraction input:focus {
-			outline: none;
-			border: none;
-			box-shadow: none;
-		}
+        .inputFraction input:focus {
+            outline: none;
+            border: none;
+            box-shadow: none;
+        }
 
-		.inputFraction .bar {
-			height: 2px;
-			background: black;
-			margin: 5px 0;
-		}
+        .inputFraction .bar {
+            height: 2px;
+            background: black;
+            margin: 5px 0;
+        }
 
-		#gamePlayArea .equation {
-			position: absolute;
-		}
+        #gamePlayArea .equation {
+            position: absolute;
+        }
 
-		.equation>* {
-			margin: 0 5px;
-			/* Provides some spacing between each item in the equation. */
-		}
+        .equation>* {
+            margin: 0 5px;
+            /* Provides some spacing between each item in the equation. */
+        }
 
-		#gamePlayArea .equation img {
-			width: 100px;
-			height: auto;
-			display: none;
-		}
+        #gamePlayArea .equation img {
+            width: 100px;
+            height: auto;
+            display: none;
+        }
 
-		.equation-wrapper {
-			display: flex;
-			/* This will make sure that each part of the equation is treated as a flex item. */
-			align-items: center;
-			/* This will vertically center the content of flex items. */
-		}
+        .equation-wrapper {
+            display: flex;
+            /* This will make sure that each part of the equation is treated as a flex item. */
+            align-items: center;
+            /* This will vertically center the content of flex items. */
+        }
 
-		.operator {
-			font-family: monospace;
-			/* Ensures the + and - characters have the same width. */
-			width: 20px;
-			/* Provides a consistent width for the operators. */
-			text-align: center;
-			/* Ensures the operators are centered within the defined width. */
-		}
+        .operator {
+            font-family: monospace;
+            /* Ensures the + and - characters have the same width. */
+            width: 20px;
+            /* Provides a consistent width for the operators. */
+            text-align: center;
+            /* Ensures the operators are centered within the defined width. */
+        }
 
-		.result {
-			flex-grow: 1;
-			/* Allows the result fraction to take up the remaining space. */
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
+        .result {
+            flex-grow: 1;
+            /* Allows the result fraction to take up the remaining space. */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-		.correct,
-		.wrong {
-			width: 20px;
-			/* Provides a consistent width for the correct and wrong icons. */
-			text-align: center;
-			/* Ensures the icons are centered within the defined width. */
-		}
+        .correct,
+        .wrong {
+            width: 20px;
+            /* Provides a consistent width for the correct and wrong icons. */
+            text-align: center;
+            /* Ensures the icons are centered within the defined width. */
+        }
 
-		#completedEquations li {
-			margin-bottom: 10px;
-			/* Provides spacing between each equation in the list. */
-		}
+        #completedEquations li {
+            margin-bottom: 10px;
+            /* Provides spacing between each equation in the list. */
+        }
 
-		.player-answer {
-			display: inline-block;
-			margin-left: 20px;
-			/* Adjust this value to create the desired spacing */
-		}
+        .player-answer {
+            display: inline-block;
+            margin-left: 20px;
+            /* Adjust this value to create the desired spacing */
+        }
 
-		#introBanner {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(255, 255, 255, 0.95);
-			/* Semi-transparent white */
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			z-index: 9999;
-			/* Ensuring it appears on top of other elements */
-		}
+        #introBanner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            /* Semi-transparent white */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            /* Ensuring it appears on top of other elements */
+        }
 
-		#introBanner .content {
-			max-width: 80%;
-			text-align: left;
-			font-size: larger;
-		}
-	</style>
+        #introBanner .content {
+            max-width: 80%;
+            text-align: left;
+            font-size: larger;
+        }
+    </style>
 </head>
 
 <body>
-	<h1>Fractionator!</h1>
-	<div id="gameContainer">
-		<!-- Gameplay Area -->
-		<div id="gamePlayArea">
-			<div id="introBanner">
-				<div class="content">
-					<h2>Welcome to Fractionator! 🚀</h2>
-					<p>
-						<strong>Objective:</strong> Solve the flying fraction equations as accurately as you can! Enter
-						your
-						answer in the answer box.
-					</p>
-					<p>
-						<strong>How to Play:</strong>
-					<ul>
-						<li>Watch for the flying fraction equation.</li>
-						<li>Type the numerator (top number) of your answer.</li>
-						<li>Hit <strong>SPACE</strong> to move to the denominator (bottom number).</li>
-						<li>Only <strong>2 digits</strong> are allowed for the numerator. The input will automatically
-							switch to
-							the denominator after entering 2 digits.</li>
-						<li>Use the <strong>BACKSPACE</strong> key to correct mistakes. If you backspace the denominator
-							completely, the input will switch back to the numerator.</li>
-						<li>Submit your answer by entering two digits in the denominator or hitting
-							<strong>SPACE</strong>
-							after
-							one digit. A happy or sad face will tell whether your answer is correct.
-						</li>
-					</ul>
-					</p>
-					<p><strong>Press <strong>SPACE</strong> to start the game!</strong></p>
-				</div>
-			</div>
-			<div class="equation">
-				<div class="fraction">
-					<span class="numerator">1</span>
-					<div class="bar"></div>
-					<span class="denominator">4</span>
-				</div>
-				<span class="operator">+</span>
-				<div class="fraction">
-					<span class="numerator">1</span>
-					<div class="bar"></div>
-					<span class="denominator">3</span>
-				</div>
-				<img id="happy1" src="happy1.png">
-				<img id="happy2" src="happy2.png">
-				<img id="happy3" src="happy3.png">
-				<img id="sad1" src="sad1.png">
-				<img id="sad2" src="sad2.png">
-				<img id="sad3" src="sad3.png">
-			</div>
-
-			<!-- Player Answer Display -->
-			<div id="playerAnswerArea">
-				<div class="inputFraction">
-					<input type="text" maxlength="2">
-					<div class="bar"></div>
-					<input type="text" maxlength="2">
-				</div>
-			</div>
-		</div>
-
-		<!-- Summary Area -->
-		<div id="summaryArea">
-			<p>Success Ratio: <span id="successRatio">0/0</span></p>
-			<ol id="completedEquations">
-				<!-- will be filled programmatically -->
-			</ol>
-		</div>
-	</div>
-
-	<script>
-
-		function positionAnswerArea() {
-			const gamePlayArea = document.getElementById('gamePlayArea');
-			const gamePlayAreaWidth = gamePlayArea.getBoundingClientRect().width;
-			playerAnswerArea.style.left = `${(gamePlayAreaWidth - playerAnswerArea.offsetWidth) / 2}px`;
-		}
-
-		function isDigit(keyCode) {
-			return keyCode >= 48 && keyCode <= 57; // 48-57 are key codes for numbers 0-9
-		}
-
-		function initializeAnswerArea() {
-			const numeratorInput = document.querySelector(".inputFraction input:nth-child(1)");
-			const denominatorInput = document.querySelector(".inputFraction input:nth-child(3)");
-			numeratorInput.value = "";
-			denominatorInput.value = "";
-			numeratorInput.focus();
-			if (!numeratorInput.hasListener) {
-				numeratorInput.hasListener = true;
-				numeratorInput.addEventListener('keydown', (e) => {
-					if (e.keyCode === 32) { // 32 is the key code for the space key
-						if (numeratorInput.value.length > 0) {
-							denominatorInput.focus();
-						}
-						e.preventDefault(); // Prevent the space from being entered
-					} else if (e.keyCode === 8) {
-						// do nothing
-					} else if (e.keyCode === 9 || e.keyCode === 13 || !isDigit(e.keyCode)) {
-						e.preventDefault();
-					}
-				});
-				numeratorInput.addEventListener('keyup', (e) => {
-					// Automatically switch focus to the denominator when two digits are entered into the numerator
-					if (e.target.value.length === 2) {
-						denominatorInput.focus();
-					}
-				});
-				denominatorInput.addEventListener('keydown', (e) => {
-					// Handle Backspace
-					if (e.keyCode === 8) {
-						// do nothing
-					} else if (e.keyCode === 32) {
-						if (denominatorInput.value.length > 0) {
-							e.preventDefault();
-							checkAnswer();
-						}
-						e.preventDefault(); // Prevent the space from being entered
-					} else if (e.keyCode === 9 || e.keyCode === 13 || !isDigit(e.keyCode)) {
-						e.preventDefault();
-					}
-
-				});
-				denominatorInput.addEventListener('keyup', (e) => {
-					if (e.keyCode === 8 && !denominatorInput.value) {
-						// If backspace is pressed and the denominator is empty,
-						// switch focus back to numerator and it will remove its last digit
-						numeratorInput.focus();
-						// Automatically switch focus to the denominator when two digits are entered into the numerator
-					} else if (e.target.value.length === 2) {
-						e.preventDefault();
-						checkAnswer();
-					}
-				});
-			}
-		}
-
-		function gcd(a, b) {
-			while (b) {
-				let t = b;
-				b = a % b;
-				a = t;
-			}
-			return a;
-		}
-
-		function getEquationValue() {
-			const equation = document.querySelector('.equation');
-
-			// Extracting numerators and denominators from the equation
-			const num1 = parseInt(equation.querySelector('.fraction:nth-child(1) .numerator').textContent);
-			const den1 = parseInt(equation.querySelector('.fraction:nth-child(1) .denominator').textContent);
-
-			const op = equation.querySelector('.operator:nth-child(2)').textContent
-
-			const num2 = parseInt(equation.querySelector('.fraction:nth-child(3) .numerator').textContent);
-			const den2 = parseInt(equation.querySelector('.fraction:nth-child(3) .denominator').textContent);
-
-			let num = op === '+' ? num1 * den2 + num2 * den1 : num1 * den2 - num2 * den1;
-			let den = den1 * den2;
-
-			const x = gcd(num, den);
-			num /= x;
-			den /= x;
-
-			const nums = [num1, num2];
-			const dens = [den1, den2];
-			return { nums, dens, op, num, den }
-		}
-
-		function getAnswerValue() {
-			const numeratorInput = document.querySelector(".inputFraction input:nth-child(1)");
-			const denominatorInput = document.querySelector(".inputFraction input:nth-child(3)");
-			const num = parseInt(numeratorInput.value);
-			const den = parseInt(denominatorInput.value);
-			return { num, den }
-		}
-
-		function updateSuccessRatio(isCorrect) {
-			const successRatioElem = document.getElementById('successRatio');
-			const [successes, attempts] = successRatioElem.textContent.split('/').map(Number);
-			const newAttempts = attempts + 1;
-			const newSuccesses = isCorrect ? successes + 1 : successes;
-			successRatioElem.textContent = `${newSuccesses}/${newAttempts}`;
-		}
-
-		function flashFeedbackIcon(isCorrect) {
-			const index = 1 + Math.floor(Math.random() * 3);
-			const id = (isCorrect ? "happy" : "sad") + index;
-
-			const equation = document.querySelector('.equation');
-			const icon = document.getElementById(id);
-
-			icon.style.display = 'block';
-			for (let child of equation.children) {
-				if (child.tagName !== 'IMG') {
-					child.backedUpDisplay = child.style.display;
-					child.style.display = 'none';
-				}
-			}
-
-			setTimeout(() => {
-				icon.style.display = 'none';
-				for (let child of equation.children) {
-					if (child.tagName !== 'IMG') {
-						child.style.display = child.backedUpDisplay;
-					}
-				}
-			}, 500);
-
-		}
-
-		function checkAnswerAndAddToSummary() {
-			const { nums: inNums, dens: inDens, op, num: num1, den: den1 } = getEquationValue();
-
-			const { num: num2, den: den2 } = getAnswerValue();
-			const isCorrect = num1 * den2 === num2 * den1;
-			flashFeedbackIcon(isCorrect);
-
-			updateSuccessRatio(isCorrect);
-
-			// Get the ol element where entries are appended
-			const completedEquations = document.getElementById("completedEquations");
-
-			// Create the necessary elements
-
-			// Create the list item
-			const li = document.createElement('li');
-			const wrapper = document.createElement('div');
-			wrapper.classList.add("equation-wrapper");
-			li.appendChild(wrapper);
-			const equation = document.createElement('div');
-			equation.classList.add("equation");
-			wrapper.appendChild(equation);
-
-			// Create the fractions and their numerators and denominators
-			for (let i = 0; i < 2; i++) { // loop twice to create two fractions
-				const fraction = document.createElement('div');
-				fraction.classList.add("fraction");
-
-				const numerator = document.createElement('span');
-				numerator.classList.add("numerator");
-				numerator.textContent = inNums[i];
-
-				const bar = document.createElement('div');
-				bar.classList.add("bar");
-
-				const denominator = document.createElement('span');
-				denominator.classList.add("denominator");
-				denominator.textContent = inDens[i];
-
-				fraction.appendChild(numerator);
-				fraction.appendChild(bar);
-				fraction.appendChild(denominator);
-
-				equation.appendChild(fraction);
-
-				if (i == 0) { // Add operator after the first fraction
-					const operator = document.createElement('span');
-					operator.classList.add("operator");
-					operator.textContent = op;
-					operator.style.margin = '0 10px';
-					equation.appendChild(operator);
-				}
-			}
-
-			// Add equals sign
-			const equals = document.createElement('span');
-			equals.classList.add("operator");
-			equals.textContent = '=';
-			equals.style.margin = '0 10px';
-			equation.appendChild(equals);
-			// equation.style.fontSize = '16px';
-
-			// Add result fraction
-			const resultFraction = document.createElement('div');
-			resultFraction.classList.add("fraction");
-
-			const resultNumerator = document.createElement('span');
-			resultNumerator.classList.add("numerator");
-			resultNumerator.textContent = num1;
-
-			const resultBar = document.createElement('div');
-			resultBar.classList.add("bar");
-
-			const resultDenominator = document.createElement('span');
-			resultDenominator.classList.add("denominator");
-			resultDenominator.textContent = den1;
-
-			resultFraction.appendChild(resultNumerator);
-			resultFraction.appendChild(resultBar);
-			resultFraction.appendChild(resultDenominator);
-
-			equation.appendChild(resultFraction);
-
-			const correctness = document.createElement('span');
-			if (isCorrect) {
-				// Add the correct checkmark
-				correctness.classList.add("correct");
-				correctness.textContent = '✅';
-				correctness.style.margin = '0 10px';
-			} else {
-				correctness.classList.add("wrong");
-				correctness.textContent = '❌';
-				correctness.style.margin = '0 10px';
-			}
-
-			equation.appendChild(correctness);
-
-			if (!isCorrect) {
-				// Add result fraction
-				const answer = document.createElement('div');
-				answer.classList.add("player-answer");
-				const fraction = document.createElement('div');
-				fraction.classList.add("fraction");
-				answer.appendChild(fraction);
-
-				const num = document.createElement('span');
-				num.classList.add("numerator");
-				num.textContent = num2;
-
-				const bar = document.createElement('div');
-				bar.classList.add("bar");
-
-				const den = document.createElement('span');
-				den.classList.add("denominator");
-				den.textContent = den2;
-
-				fraction.appendChild(num);
-				fraction.appendChild(bar);
-				fraction.appendChild(den);
-
-				equation.appendChild(answer);
-			}
-
-			// Append the created list item to the completedEquations ol
-			completedEquations.appendChild(li);
-		}
-
-		function equationHidden() {
-			const completedEquations = document.getElementById("completedEquations");
-			if (completedEquations.childElementCount > 7) {
-				console.log("haha!");
-			}
-			const equation = document.querySelector('.equation');
-			for (let child of equation.children) {
-				if (child.tagName !== 'IMG') {
-					if (child.style.display === 'none') {
-						return true;
-					} else {
-						break;
-					}
-				}
-			}
-			const banner = document.getElementById('introBanner');
-			return banner.style.display != 'none';
-		}
-
-		let cancelAnimation;
-
-		function checkAnswer() {
-			if (!equationHidden()) {
-				cancelAnimation();
-				checkAnswerAndAddToSummary();
-			}
-		}
-
-		function doesOverlap(startX, slope, playerAnswerArea, equation, gamePlayAreaHeight) {
-			for (let y = 0; y < gamePlayAreaHeight; y++) {
-				let x = startX + slope * y;
-
-				let eqRect = {
-					top: y,
-					bottom: y + equation.offsetHeight,
-					left: x,
-					right: x + equation.offsetWidth
-				};
-
-				let paRect = playerAnswerArea.getBoundingClientRect();
-
-				if (eqRect.left < paRect.right && eqRect.right > paRect.left && eqRect.top < paRect.bottom && eqRect.bottom > paRect.top) {
-					return true;
-				}
-			}
-			return false;
-		}
-
-		function initializeEquation() {
-			const rand = Math.random();
-			const isPlus = rand < 0.75
-
-			while (true) {
-				const num1 = 1 + Math.floor(Math.random() * 9)
-				const den1 = 2 + Math.floor(Math.random() * 8)
-				const num2 = 1 + Math.floor(Math.random() * 9)
-				const den2 = 2 + Math.floor(Math.random() * 8)
-
-				if (num1 < den1 && num2 < den2 && (isPlus || num1 * den2 > num2 * den1) && (!isPlus || num1 * den2 + num2 * den1 <= den1 * den2)) {
-					const equation = document.querySelector(".equation");
-					const numerators = equation.querySelectorAll(".numerator");
-					const denominators = equation.querySelectorAll(".denominator");
-					const operator = equation.querySelector(".operator");
-					numerators[0].textContent = num1;
-					denominators[0].textContent = den1;
-					numerators[1].textContent = num2;
-					denominators[1].textContent = den2;
-					operator.textContent = isPlus ? '+' : '-';
-					break;
-				}
-			}
-		}
-
-		function initializeDrop(equation, gamePlayAreaWidth, gamePlayAreaHeight) {
-			initializeAnswerArea();
-			initializeEquation();
-
-			const equationWidth = equation.getBoundingClientRect().width;
-
-			const maxStartX = gamePlayAreaWidth - equationWidth;
-			const startX = Math.random() * maxStartX;
-
-			// Randomly generate a landing position for the equation anywhere along the bottom.
-			let landingPosition, pathSlope;
-			let isValid = false;
-
-			while (!isValid) {
-				landingPosition = Math.random() * (gamePlayAreaWidth - equationWidth);
-
-				// Calculate the path slope.
-				pathSlope = (landingPosition - startX) / gamePlayAreaHeight;
-
-				// Check if any point in this path would cause an overlap.
-				isValid = !doesOverlap(startX, pathSlope, playerAnswerArea, equation, gamePlayAreaHeight);
-			}
-
-			equation.style.left = `${startX}px`;
-
-			const dx = landingPosition - startX;
-			const dy = gamePlayAreaHeight;
-			const hypotenuse = Math.sqrt(dx * dx + dy * dy);
-
-			const speed = 0.2;
-			const velocityX = speed * (dx / hypotenuse);
-			const velocityY = speed * (dy / hypotenuse);
-
-			return { startX, velocityX, velocityY };
-		}
-
-		function dropEquation() {
-			const equation = document.querySelector('#gamePlayArea .equation');
-			const gamePlayArea = document.getElementById('gamePlayArea');
-			const gamePlayAreaWidth = gamePlayArea.getBoundingClientRect().width;
-			const gamePlayAreaHeight = gamePlayArea.getBoundingClientRect().height;
-			const { startX, velocityX, velocityY } = initializeDrop(equation, gamePlayAreaWidth, gamePlayAreaHeight);
-
-			const inputFraction = document.querySelector(".inputFraction");
-
-
-			let posY = 0;
-			let posX = startX;
-
-			return new Promise((resolve) => {
-				let animationId;
-
-				function animate() {
-					posY += velocityY;
-					posX += velocityX;
-
-					if (posY < gamePlayAreaHeight) {
-						equation.style.top = `${posY}px`;
-						equation.style.left = `${posX}px`;
-						animationId = requestAnimationFrame(animate);
-					} else {
-						resolve();
-						checkAnswer();
-					}
-				}
-
-				cancelAnimation = () => {
-					cancelAnimationFrame(animationId);
-					resolve();
-				};
-
-				animationId = requestAnimationFrame(animate);
-			});
-		}
-
-		function clearSummary() {
-			const completedEquations = document.getElementById("completedEquations");
-			while (completedEquations.firstChild) {
-				completedEquations.removeChild(completedEquations.firstChild);
-			}
-
-			const successRatioElem = document.getElementById('successRatio');
-			successRatioElem.textContent = '0/0';
-			completedEquations.recordedStartTime = new Date();
-		}
-
-		function displayCompletedGameDuration() {
-			const completedEquations = document.getElementById("completedEquations");
-			if (completedEquations.hasOwnProperty('recordedStartTime')) {
-				const endTime = new Date();
-				const successRatioElem = document.getElementById('successRatio');
-				const startTime = completedEquations.recordedStartTime;
-				const timeDiff = endTime - startTime;
-				const seconds = Math.floor(timeDiff / 100) / 10;
-				successRatioElem.textContent += ` (${seconds} seconds)`;
-			}
-
-		}
-
-		function playGame() {
-			let dropCount = 0;
-			const maxDrops = 7;
-			const delayBetweenDrops = 500;  // half a second
-
-			positionAnswerArea();
-			clearSummary();
-
-			function scheduleDrop() {
-				if (dropCount < maxDrops) {
-					// Increment the drop count
-					dropCount++;
-
-					// Drop the equation
-					dropEquation().then(() => {
-						// Schedule the next drop
-						setTimeout(scheduleDrop, delayBetweenDrops);
-					});
-				} else {
-					restartGame();
-				}
-			}
-
-			scheduleDrop();
-		}
-
-		function restartGame() {
-			displayCompletedGameDuration();
-			const banner = document.getElementById('introBanner');
-			banner.style.display = 'flex';
-			document.addEventListener('keydown', function startGame(e) {
-				if (e.keyCode === 32 || e.keyCode == 13) {
-					banner.style.display = 'none';
-					document.removeEventListener('keydown', startGame);
-					playGame();
-					e.preventDefault();
-				}
-			});
-		}
-
-		restartGame();
-	</script>
+    <h1>Fractionator!</h1>
+    <div id="gameContainer">
+        <!-- Gameplay Area -->
+        <div id="gamePlayArea">
+            <div id="introBanner">
+                <div class="content">
+                    <h2>Welcome to Fractionator! 🚀</h2>
+                    <p>
+                        <strong>Objective:</strong> Solve the flying fraction equations as accurately as you can! Enter
+                        your
+                        answer in the answer box.
+                    </p>
+                    <p>
+                        <strong>How to Play:</strong>
+                    <ul>
+                        <li>Watch for the flying fraction equation.</li>
+                        <li>Type the numerator (top number) of your answer.</li>
+                        <li>Hit <strong>SPACE</strong> to move to the denominator (bottom number).</li>
+                        <li>Only <strong>2 digits</strong> are allowed for the numerator. The input will automatically
+                            switch to
+                            the denominator after entering 2 digits.</li>
+                        <li>Use the <strong>BACKSPACE</strong> key to correct mistakes. If you backspace the denominator
+                            completely, the input will switch back to the numerator.</li>
+                        <li>Submit your answer by entering two digits in the denominator or hitting
+                            <strong>SPACE</strong>
+                            after
+                            one digit. A happy or sad face will tell whether your answer is correct.
+                        </li>
+                    </ul>
+                    </p>
+                    <p><strong>Press <strong>SPACE</strong> to start the game!</strong></p>
+                </div>
+            </div>
+            <div class="equation">
+                <div class="fraction">
+                    <span class="numerator">1</span>
+                    <div class="bar"></div>
+                    <span class="denominator">4</span>
+                </div>
+                <span class="operator">+</span>
+                <div class="fraction">
+                    <span class="numerator">1</span>
+                    <div class="bar"></div>
+                    <span class="denominator">3</span>
+                </div>
+                <img id="happy1" src="happy1.png">
+                <img id="happy2" src="happy2.png">
+                <img id="happy3" src="happy3.png">
+                <img id="sad1" src="sad1.png">
+                <img id="sad2" src="sad2.png">
+                <img id="sad3" src="sad3.png">
+            </div>
+
+            <!-- Player Answer Display -->
+            <div id="playerAnswerArea">
+                <div class="inputFraction">
+                    <input type="text" maxlength="2">
+                    <div class="bar"></div>
+                    <input type="text" maxlength="2">
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Area -->
+        <div id="summaryArea">
+            <p>Success Ratio: <span id="successRatio">0/0</span></p>
+            <ol id="completedEquations">
+                <!-- will be filled programmatically -->
+            </ol>
+        </div>
+    </div>
+
+    <script>
+
+        function positionAnswerArea() {
+            const gamePlayArea = document.getElementById('gamePlayArea');
+            const gamePlayAreaWidth = gamePlayArea.getBoundingClientRect().width;
+            playerAnswerArea.style.left = `${(gamePlayAreaWidth - playerAnswerArea.offsetWidth) / 2}px`;
+        }
+
+        function isDigit(keyCode) {
+            return keyCode >= 48 && keyCode <= 57; // 48-57 are key codes for numbers 0-9
+        }
+
+        function initializeAnswerArea() {
+            const numeratorInput = document.querySelector(".inputFraction input:nth-child(1)");
+            const denominatorInput = document.querySelector(".inputFraction input:nth-child(3)");
+            numeratorInput.value = "";
+            denominatorInput.value = "";
+            numeratorInput.focus();
+            if (!numeratorInput.hasListener) {
+                numeratorInput.hasListener = true;
+                numeratorInput.addEventListener('keydown', (e) => {
+                    if (e.keyCode === 32) { // 32 is the key code for the space key
+                        if (numeratorInput.value.length > 0) {
+                            denominatorInput.focus();
+                        }
+                        e.preventDefault(); // Prevent the space from being entered
+                    } else if (e.keyCode === 8) {
+                        // do nothing
+                    } else if (e.keyCode === 9 || e.keyCode === 13 || !isDigit(e.keyCode)) {
+                        e.preventDefault();
+                    }
+                });
+                numeratorInput.addEventListener('keyup', (e) => {
+                    // Automatically switch focus to the denominator when two digits are entered into the numerator
+                    if (e.target.value.length === 2) {
+                        denominatorInput.focus();
+                    }
+                });
+                denominatorInput.addEventListener('keydown', (e) => {
+                    // Handle Backspace
+                    if (e.keyCode === 8) {
+                        // do nothing
+                    } else if (e.keyCode === 32) {
+                        if (denominatorInput.value.length > 0) {
+                            e.preventDefault();
+                            checkAnswer();
+                        }
+                        e.preventDefault(); // Prevent the space from being entered
+                    } else if (e.keyCode === 9 || e.keyCode === 13 || !isDigit(e.keyCode)) {
+                        e.preventDefault();
+                    }
+
+                });
+                denominatorInput.addEventListener('keyup', (e) => {
+                    if (e.keyCode === 8 && !denominatorInput.value) {
+                        // If backspace is pressed and the denominator is empty,
+                        // switch focus back to numerator and it will remove its last digit
+                        numeratorInput.focus();
+                        // Automatically switch focus to the denominator when two digits are entered into the numerator
+                    } else if (e.target.value.length === 2) {
+                        e.preventDefault();
+                        checkAnswer();
+                    }
+                });
+            }
+        }
+
+        function gcd(a, b) {
+            while (b) {
+                let t = b;
+                b = a % b;
+                a = t;
+            }
+            return a;
+        }
+
+        function getEquationValue() {
+            const equation = document.querySelector('.equation');
+
+            // Extracting numerators and denominators from the equation
+            const num1 = parseInt(equation.querySelector('.fraction:nth-child(1) .numerator').textContent);
+            const den1 = parseInt(equation.querySelector('.fraction:nth-child(1) .denominator').textContent);
+
+            const op = equation.querySelector('.operator:nth-child(2)').textContent
+
+            const num2 = parseInt(equation.querySelector('.fraction:nth-child(3) .numerator').textContent);
+            const den2 = parseInt(equation.querySelector('.fraction:nth-child(3) .denominator').textContent);
+
+            let num = op === '+' ? num1 * den2 + num2 * den1 : num1 * den2 - num2 * den1;
+            let den = den1 * den2;
+
+            const x = gcd(num, den);
+            num /= x;
+            den /= x;
+
+            const nums = [num1, num2];
+            const dens = [den1, den2];
+            return { nums, dens, op, num, den }
+        }
+
+        function getAnswerValue() {
+            const numeratorInput = document.querySelector(".inputFraction input:nth-child(1)");
+            const denominatorInput = document.querySelector(".inputFraction input:nth-child(3)");
+            const num = parseInt(numeratorInput.value);
+            const den = parseInt(denominatorInput.value);
+            return { num, den }
+        }
+
+        function updateSuccessRatio(isCorrect) {
+            const successRatioElem = document.getElementById('successRatio');
+            const [successes, attempts] = successRatioElem.textContent.split('/').map(Number);
+            const newAttempts = attempts + 1;
+            const newSuccesses = isCorrect ? successes + 1 : successes;
+            successRatioElem.textContent = `${newSuccesses}/${newAttempts}`;
+        }
+
+        function flashFeedbackIcon(isCorrect) {
+            const index = 1 + Math.floor(Math.random() * 3);
+            const id = (isCorrect ? "happy" : "sad") + index;
+
+            const equation = document.querySelector('.equation');
+            const icon = document.getElementById(id);
+
+            icon.style.display = 'block';
+            for (let child of equation.children) {
+                if (child.tagName !== 'IMG') {
+                    child.backedUpDisplay = child.style.display;
+                    child.style.display = 'none';
+                }
+            }
+
+            setTimeout(() => {
+                icon.style.display = 'none';
+                for (let child of equation.children) {
+                    if (child.tagName !== 'IMG') {
+                        child.style.display = child.backedUpDisplay;
+                    }
+                }
+            }, 500);
+
+        }
+
+        function checkAnswerAndAddToSummary() {
+            const { nums: inNums, dens: inDens, op, num: num1, den: den1 } = getEquationValue();
+
+            const { num: num2, den: den2 } = getAnswerValue();
+            const isCorrect = num1 * den2 === num2 * den1;
+            flashFeedbackIcon(isCorrect);
+
+            updateSuccessRatio(isCorrect);
+
+            // Get the ol element where entries are appended
+            const completedEquations = document.getElementById("completedEquations");
+
+            // Create the necessary elements
+
+            // Create the list item
+            const li = document.createElement('li');
+            const wrapper = document.createElement('div');
+            wrapper.classList.add("equation-wrapper");
+            li.appendChild(wrapper);
+            const equation = document.createElement('div');
+            equation.classList.add("equation");
+            wrapper.appendChild(equation);
+
+            // Create the fractions and their numerators and denominators
+            for (let i = 0; i < 2; i++) { // loop twice to create two fractions
+                const fraction = document.createElement('div');
+                fraction.classList.add("fraction");
+
+                const numerator = document.createElement('span');
+                numerator.classList.add("numerator");
+                numerator.textContent = inNums[i];
+
+                const bar = document.createElement('div');
+                bar.classList.add("bar");
+
+                const denominator = document.createElement('span');
+                denominator.classList.add("denominator");
+                denominator.textContent = inDens[i];
+
+                fraction.appendChild(numerator);
+                fraction.appendChild(bar);
+                fraction.appendChild(denominator);
+
+                equation.appendChild(fraction);
+
+                if (i == 0) { // Add operator after the first fraction
+                    const operator = document.createElement('span');
+                    operator.classList.add("operator");
+                    operator.textContent = op;
+                    operator.style.margin = '0 10px';
+                    equation.appendChild(operator);
+                }
+            }
+
+            // Add equals sign
+            const equals = document.createElement('span');
+            equals.classList.add("operator");
+            equals.textContent = '=';
+            equals.style.margin = '0 10px';
+            equation.appendChild(equals);
+            // equation.style.fontSize = '16px';
+
+            // Add result fraction
+            const resultFraction = document.createElement('div');
+            resultFraction.classList.add("fraction");
+
+            const resultNumerator = document.createElement('span');
+            resultNumerator.classList.add("numerator");
+            resultNumerator.textContent = num1;
+
+            const resultBar = document.createElement('div');
+            resultBar.classList.add("bar");
+
+            const resultDenominator = document.createElement('span');
+            resultDenominator.classList.add("denominator");
+            resultDenominator.textContent = den1;
+
+            resultFraction.appendChild(resultNumerator);
+            resultFraction.appendChild(resultBar);
+            resultFraction.appendChild(resultDenominator);
+
+            equation.appendChild(resultFraction);
+
+            const correctness = document.createElement('span');
+            if (isCorrect) {
+                // Add the correct checkmark
+                correctness.classList.add("correct");
+                correctness.textContent = '✅';
+                correctness.style.margin = '0 10px';
+            } else {
+                correctness.classList.add("wrong");
+                correctness.textContent = '❌';
+                correctness.style.margin = '0 10px';
+            }
+
+            equation.appendChild(correctness);
+
+            if (!isCorrect) {
+                // Add result fraction
+                const answer = document.createElement('div');
+                answer.classList.add("player-answer");
+                const fraction = document.createElement('div');
+                fraction.classList.add("fraction");
+                answer.appendChild(fraction);
+
+                const num = document.createElement('span');
+                num.classList.add("numerator");
+                num.textContent = num2;
+
+                const bar = document.createElement('div');
+                bar.classList.add("bar");
+
+                const den = document.createElement('span');
+                den.classList.add("denominator");
+                den.textContent = den2;
+
+                fraction.appendChild(num);
+                fraction.appendChild(bar);
+                fraction.appendChild(den);
+
+                equation.appendChild(answer);
+            }
+
+            // Append the created list item to the completedEquations ol
+            completedEquations.appendChild(li);
+        }
+
+        function equationHidden() {
+            const completedEquations = document.getElementById("completedEquations");
+            if (completedEquations.childElementCount > 7) {
+                console.log("haha!");
+            }
+            const equation = document.querySelector('.equation');
+            for (let child of equation.children) {
+                if (child.tagName !== 'IMG') {
+                    if (child.style.display === 'none') {
+                        return true;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            const banner = document.getElementById('introBanner');
+            return banner.style.display != 'none';
+        }
+
+        let cancelAnimation;
+
+        function checkAnswer() {
+            if (!equationHidden()) {
+                cancelAnimation();
+                checkAnswerAndAddToSummary();
+            }
+        }
+
+        function doesOverlap(startX, slope, playerAnswerArea, equation, gamePlayAreaHeight) {
+            for (let y = 0; y < gamePlayAreaHeight; y++) {
+                let x = startX + slope * y;
+
+                let eqRect = {
+                    top: y,
+                    bottom: y + equation.offsetHeight,
+                    left: x,
+                    right: x + equation.offsetWidth
+                };
+
+                let paRect = playerAnswerArea.getBoundingClientRect();
+
+                if (eqRect.left < paRect.right && eqRect.right > paRect.left && eqRect.top < paRect.bottom && eqRect.bottom > paRect.top) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function initializeEquation() {
+            const rand = Math.random();
+            const isPlus = rand < 0.75
+
+            while (true) {
+                const num1 = 1 + Math.floor(Math.random() * 9)
+                const den1 = 2 + Math.floor(Math.random() * 8)
+                const num2 = 1 + Math.floor(Math.random() * 9)
+                const den2 = 2 + Math.floor(Math.random() * 8)
+
+                if (num1 < den1 && num2 < den2 && (isPlus || num1 * den2 > num2 * den1) && (!isPlus || num1 * den2 + num2 * den1 <= den1 * den2)) {
+                    const equation = document.querySelector(".equation");
+                    const numerators = equation.querySelectorAll(".numerator");
+                    const denominators = equation.querySelectorAll(".denominator");
+                    const operator = equation.querySelector(".operator");
+                    numerators[0].textContent = num1;
+                    denominators[0].textContent = den1;
+                    numerators[1].textContent = num2;
+                    denominators[1].textContent = den2;
+                    operator.textContent = isPlus ? '+' : '-';
+                    break;
+                }
+            }
+        }
+
+        function initializeDrop(equation, gamePlayAreaWidth, gamePlayAreaHeight) {
+            initializeAnswerArea();
+            initializeEquation();
+
+            const equationWidth = equation.getBoundingClientRect().width;
+
+            const maxStartX = gamePlayAreaWidth - equationWidth;
+            const startX = Math.random() * maxStartX;
+
+            // Randomly generate a landing position for the equation anywhere along the bottom.
+            let landingPosition, pathSlope;
+            let isValid = false;
+
+            while (!isValid) {
+                landingPosition = Math.random() * (gamePlayAreaWidth - equationWidth);
+
+                // Calculate the path slope.
+                pathSlope = (landingPosition - startX) / gamePlayAreaHeight;
+
+                // Check if any point in this path would cause an overlap.
+                isValid = !doesOverlap(startX, pathSlope, playerAnswerArea, equation, gamePlayAreaHeight);
+            }
+
+            equation.style.left = `${startX}px`;
+
+            const dx = landingPosition - startX;
+            const dy = gamePlayAreaHeight;
+            const hypotenuse = Math.sqrt(dx * dx + dy * dy);
+
+            const speed = 0.2;
+            const velocityX = speed * (dx / hypotenuse);
+            const velocityY = speed * (dy / hypotenuse);
+
+            return { startX, velocityX, velocityY };
+        }
+
+        function dropEquation() {
+            const equation = document.querySelector('#gamePlayArea .equation');
+            const gamePlayArea = document.getElementById('gamePlayArea');
+            const gamePlayAreaWidth = gamePlayArea.getBoundingClientRect().width;
+            const gamePlayAreaHeight = gamePlayArea.getBoundingClientRect().height;
+            const { startX, velocityX, velocityY } = initializeDrop(equation, gamePlayAreaWidth, gamePlayAreaHeight);
+
+            const inputFraction = document.querySelector(".inputFraction");
+
+
+            let posY = 0;
+            let posX = startX;
+
+            return new Promise((resolve) => {
+                let animationId;
+
+                function animate() {
+                    posY += velocityY;
+                    posX += velocityX;
+
+                    if (posY < gamePlayAreaHeight) {
+                        equation.style.top = `${posY}px`;
+                        equation.style.left = `${posX}px`;
+                        animationId = requestAnimationFrame(animate);
+                    } else {
+                        resolve();
+                        checkAnswer();
+                    }
+                }
+
+                cancelAnimation = () => {
+                    cancelAnimationFrame(animationId);
+                    resolve();
+                };
+
+                animationId = requestAnimationFrame(animate);
+            });
+        }
+
+        function clearSummary() {
+            const completedEquations = document.getElementById("completedEquations");
+            while (completedEquations.firstChild) {
+                completedEquations.removeChild(completedEquations.firstChild);
+            }
+
+            const successRatioElem = document.getElementById('successRatio');
+            successRatioElem.textContent = '0/0';
+            completedEquations.recordedStartTime = new Date();
+        }
+
+        function displayCompletedGameDuration() {
+            const completedEquations = document.getElementById("completedEquations");
+            if (completedEquations.hasOwnProperty('recordedStartTime')) {
+                const endTime = new Date();
+                const successRatioElem = document.getElementById('successRatio');
+                const startTime = completedEquations.recordedStartTime;
+                const timeDiff = endTime - startTime;
+                const seconds = Math.floor(timeDiff / 100) / 10;
+                successRatioElem.textContent += ` (${seconds} seconds)`;
+            }
+
+        }
+
+        function playGame() {
+            let dropCount = 0;
+            const maxDrops = 7;
+            const delayBetweenDrops = 500;  // half a second
+
+            positionAnswerArea();
+            clearSummary();
+
+            function scheduleDrop() {
+                if (dropCount < maxDrops) {
+                    // Increment the drop count
+                    dropCount++;
+
+                    // Drop the equation
+                    dropEquation().then(() => {
+                        // Schedule the next drop
+                        setTimeout(scheduleDrop, delayBetweenDrops);
+                    });
+                } else {
+                    restartGame();
+                }
+            }
+
+            scheduleDrop();
+        }
+
+        function restartGame() {
+            displayCompletedGameDuration();
+            const banner = document.getElementById('introBanner');
+            banner.style.display = 'flex';
+            document.addEventListener('keydown', function startGame(e) {
+                if (e.keyCode === 32 || e.keyCode == 13) {
+                    banner.style.display = 'none';
+                    document.removeEventListener('keydown', startGame);
+                    playGame();
+                    e.preventDefault();
+                }
+            });
+        }
+
+        restartGame();
+    </script>
 
 
 </body>
