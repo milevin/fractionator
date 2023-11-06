@@ -344,7 +344,7 @@
 			const num2 = parseInt(equation.querySelector('.fraction:nth-child(3) .numerator').textContent);
 			const den2 = parseInt(equation.querySelector('.fraction:nth-child(3) .denominator').textContent);
 
-			let num = op === "+" ? num1 * den2 + num2 * den1 : num1 * den2 - num2 * den1;
+			let num = op === '+' ? num1 * den2 + num2 * den1 : num1 * den2 - num2 * den1;
 			let den = den1 * den2;
 
 			const x = gcd(num, den);
@@ -446,7 +446,7 @@
 				if (i == 0) { // Add operator after the first fraction
 					const operator = document.createElement('span');
 					operator.classList.add("operator");
-					operator.textContent = '+'; // hardcoded value
+					operator.textContent = op;
 					operator.style.margin = '0 10px';
 					equation.appendChild(operator);
 				}
@@ -574,24 +574,27 @@
 		}
 
 		function initializeEquation() {
-			const num1 = 1 + Math.floor(Math.random() * 9)
-			const den1 = 2 + Math.floor(Math.random() * 8)
-			const num2 = 1 + Math.floor(Math.random() * 9)
-			const den2 = 2 + Math.floor(Math.random() * 8)
-			const isPlus = Math.random() < 0.75
+			const rand = Math.random();
+			const isPlus = rand < 0.75
 
-			if (!(num1 < den1 && num2 < den2 && (isPlus || num1 * den2 > num2 * den1) && (!isPlus || num1 * den2 + num2 * den1 <= den1 * den2))) {
-				initializeEquation()
-			} else {
-				const equation = document.querySelector(".equation");
-				const numerators = equation.querySelectorAll(".numerator");
-				const denominators = equation.querySelectorAll(".denominator");
-				const operator = equation.querySelector(".operator");
-				numerators[0].textContent = num1;
-				denominators[0].textContent = den1;
-				numerators[1].textContent = num2;
-				denominators[1].textContent = den2;
-				operator.textContent = isPlus ? "+" : "-";
+			while (true) {
+				const num1 = 1 + Math.floor(Math.random() * 9)
+				const den1 = 2 + Math.floor(Math.random() * 8)
+				const num2 = 1 + Math.floor(Math.random() * 9)
+				const den2 = 2 + Math.floor(Math.random() * 8)
+
+				if (num1 < den1 && num2 < den2 && (isPlus || num1 * den2 > num2 * den1) && (!isPlus || num1 * den2 + num2 * den1 <= den1 * den2)) {
+					const equation = document.querySelector(".equation");
+					const numerators = equation.querySelectorAll(".numerator");
+					const denominators = equation.querySelectorAll(".denominator");
+					const operator = equation.querySelector(".operator");
+					numerators[0].textContent = num1;
+					denominators[0].textContent = den1;
+					numerators[1].textContent = num2;
+					denominators[1].textContent = den2;
+					operator.textContent = isPlus ? '+' : '-';
+					break;
+				}
 			}
 		}
 
