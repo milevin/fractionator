@@ -201,14 +201,16 @@
                     <ul>
                         <li>Watch for the flying fraction equation.</li>
                         <li>Type the numerator (top number) of your answer.</li>
-                        <li>Hit <strong>SPACE</strong> to move to the denominator (bottom number).</li>
+                        <li>Hit <strong>SPACE, TAB, ENTER</strong>, or <strong>/</strong> to move to the denominator
+                            (bottom number).
+                        </li>
                         <li>Only <strong>2 digits</strong> are allowed for the numerator. The input will automatically
                             switch to
                             the denominator after entering 2 digits.</li>
-                        <li>Use the <strong>BACKSPACE</strong> key to correct mistakes. If you backspace the denominator
+                        <li>Press <strong>BACKSPACE</strong> to correct mistakes. If you backspace the denominator
                             completely, the input will switch back to the numerator.</li>
                         <li>Submit your answer by entering two digits in the denominator or hitting
-                            <strong>SPACE</strong>
+                            <strong>SPACE, TAB, ENTER</strong>, or <strong>/</strong>
                             after
                             one digit. A happy or sad face will tell whether your answer is correct.
                         </li>
@@ -277,14 +279,16 @@
             if (!numeratorInput.hasListener) {
                 numeratorInput.hasListener = true;
                 numeratorInput.addEventListener('keydown', (e) => {
-                    if (e.keyCode === 32) { // 32 is the key code for the space key
+                    if (e.keyCode === 32 || e.keyCode === 191 || e.keyCode === 9 || e.keyCode === 13) {
+                        // space or '/' or Tab or Enter
                         if (numeratorInput.value.length > 0) {
                             denominatorInput.focus();
                         }
                         e.preventDefault(); // Prevent the space from being entered
                     } else if (e.keyCode === 8) {
-                        // do nothing
-                    } else if (e.keyCode === 9 || e.keyCode === 13 || !isDigit(e.keyCode)) {
+                        // pass backspace to the UI
+                        // by doing nothing
+                    } else if (!isDigit(e.keyCode)) {
                         e.preventDefault();
                     }
                 });
@@ -297,25 +301,24 @@
                 denominatorInput.addEventListener('keydown', (e) => {
                     // Handle Backspace
                     if (e.keyCode === 8) {
-                        // do nothing
-                    } else if (e.keyCode === 32) {
+                        // If backspace is pressed and the denominator is empty,
+                        // switch focus back to numerator and it will remove its last digit
+                        if (!denominatorInput.value) {
+                            numeratorInput.focus();
+                        }
+                    } else if (e.keyCode === 32 || e.keyCode === 191 || e.keyCode === 9 || e.keyCode === 13) {
+                        e.preventDefault(); // Prevent the key from being entered
                         if (denominatorInput.value.length > 0) {
-                            e.preventDefault();
                             checkAnswer();
                         }
-                        e.preventDefault(); // Prevent the space from being entered
-                    } else if (e.keyCode === 9 || e.keyCode === 13 || !isDigit(e.keyCode)) {
+                    } else if (!isDigit(e.keyCode)) {
                         e.preventDefault();
                     }
 
                 });
                 denominatorInput.addEventListener('keyup', (e) => {
-                    if (e.keyCode === 8 && !denominatorInput.value) {
-                        // If backspace is pressed and the denominator is empty,
-                        // switch focus back to numerator and it will remove its last digit
-                        numeratorInput.focus();
+                    if (e.target.value.length === 2) {
                         // Automatically switch focus to the denominator when two digits are entered into the numerator
-                    } else if (e.target.value.length === 2) {
                         e.preventDefault();
                         checkAnswer();
                     }
